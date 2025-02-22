@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: staging
+    database: dlp-dateng-04 # called dataset in BQ
+    schema: de_04_dataset
+
+    tables:
+      - name: green_tripdata
+      - name: yellow_tripdata
