@@ -1,9 +1,16 @@
 version: 2
 
+# compile this code to auto generate this schema file:
+# {% set models_to_generate = codegen.get_models(directory='staging', prefix='stg') %}
+
+# {{
+# 	codegen.generate_model_yaml(model_names = models_to_generate)
+# }}
+
 sources:
   - name: staging
-    database: "{{ env_var('DBT_DATABASE', 'taxi-rides-ny-339813-412521') }}"
-    schema: "{{ env_var('DBT_SCHEMA', 'trips_data_all') }}"
+    database: "{{ env_var('DBT_DATABASE', 'dlp-dateng-04') }}" # called dataset in BQ
+    schema: "{{ env_var('DBT_SCHEMA', 'de_04_dataset') }}"
       # loaded_at_field: record_loaded_at
     tables:
       - name: green_tripdata
@@ -12,7 +19,7 @@ sources:
            # error_after: {count: 6, period: hour}
 
 models:
-    - name: stg_green_tripdata
+    - name: stg__green_tripdata
       description: >
         Trip made by green taxis, also known as boro taxis and street-hail liveries.
         Green taxis may respond to street hails,but only in the areas indicated in green on the
@@ -103,7 +110,7 @@ models:
           - name: Total_amount 
             description: The total amount charged to passengers. Does not include cash tips.
 
-    - name: stg_yellow_tripdata
+    - name: stg__yellow_tripdata
       description: > 
         Trips made by New York City's iconic yellow taxis. 
         Yellow taxis are the only vehicles permitted to respond to a street hail from a passenger in all five
