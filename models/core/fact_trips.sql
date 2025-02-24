@@ -17,7 +17,11 @@ with green_tripdata as (
             when cast(extract(month from pickup_datetime)/4 as int)+1=4 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q4')
             else 'N/A'
         end as year_quarter        
-    from {{ ref('stg__green_tripdata') }}
+    from 
+        {{ ref('stg__green_tripdata') }}
+    where
+    pickup_datetime >= '2019-01-01' and
+    pickup_datetime <= '2020-12-31'
 ), 
 yellow_tripdata as (
     select *, 
@@ -32,7 +36,11 @@ yellow_tripdata as (
             when cast(extract(month from pickup_datetime)/4 as int)+1=4 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q4')
             else 'N/A'
         end as year_quarter        
-    from {{ ref('stg__yellow_tripdata') }}
+    from 
+        {{ ref('stg__yellow_tripdata') }}
+    where
+        pickup_datetime >= '2019-01-01' and
+        pickup_datetime <= '2020-12-31'
 ), 
 trips_unioned as (
     select * from green_tripdata
@@ -80,7 +88,7 @@ inner join dim_zones as dropoff_zone
 on trips_unioned.dropoff_locationid = dropoff_zone.locationid
 
 -- Dev limit
--- dbt build --select <model.sql> --vars '{'is_test_run: false}'
+-- dbt build --select fact_trips.sql --vars '{'is_test_run: false}'
 {% if var('is_test_run', default=false) %}
 
   limit 100
