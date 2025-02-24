@@ -1,24 +1,24 @@
-with yellow_quart_revenue as (
+with green_quart_revenue as (
     select
-    'Yellow' as service_type,
-    year,
-    quarter,
-    sum(total_amount) as total_revenue
-    from {{ ref('fact_trips') }}
-    where
-        service_type = 'Yellow'
-    group by year, quarter
-    order by year asc, quarter asc
-),
-green_quart_revenue as (
-    select
-    'Green' as service_type,
-    year,
-    quarter,
-    sum(total_amount) as total_revenue
+        'Green' as service_type,
+        year,
+        quarter,
+        sum(total_amount) as total_revenue
     from {{ ref('fact_trips') }}
     where
         service_type = 'Green'
+    group by year, quarter
+    order by year asc, quarter asc
+),
+yellow_quart_revenue as (
+    select
+        'Yellow' as service_type,
+        year,
+        quarter,
+        sum(total_amount) as total_revenue
+    from {{ ref('fact_trips') }}
+    where
+        service_type = 'Yellow'
     group by year, quarter
     order by year asc, quarter asc
 ),

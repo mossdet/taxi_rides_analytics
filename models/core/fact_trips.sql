@@ -7,40 +7,40 @@
 with green_tripdata as (
     select *, 
         'Green' as service_type,
-        extract(year from pickup_datetime) as year,
-        extract(month from pickup_datetime) as month,
-        cast(extract(month from pickup_datetime)/4 as int)+1 as quarter,
+        extract(YEAR from pickup_datetime)  as year,
+        extract(MONTH from pickup_datetime)  as month,
+        extract(QUARTER from pickup_datetime) as quarter,  
         case
-            when cast(extract(month from pickup_datetime)/4 as int)+1=1 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q1') 
-            when cast(extract(month from pickup_datetime)/4 as int)+1=2 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q2')
-            when cast(extract(month from pickup_datetime)/4 as int)+1=3 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q3')
-            when cast(extract(month from pickup_datetime)/4 as int)+1=4 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q4')
+            when extract(QUARTER from pickup_datetime)=1 then concat(cast(extract(YEAR from pickup_datetime) as string), '/Q1') 
+            when extract(QUARTER from pickup_datetime)=2 then concat(cast(extract(YEAR from pickup_datetime) as string), '/Q2')
+            when extract(QUARTER from pickup_datetime)=3 then concat(cast(extract(YEAR from pickup_datetime) as string), '/Q3')
+            when extract(QUARTER from pickup_datetime)=4 then concat(cast(extract(YEAR from pickup_datetime) as string), '/Q4')
             else 'N/A'
         end as year_quarter        
-    from 
+    from
         {{ ref('stg__green_tripdata') }}
     where
-    pickup_datetime >= '2019-01-01' and
-    pickup_datetime <= '2020-12-31'
+        extract(YEAR from pickup_datetime) >= 2019 and
+        extract(YEAR from pickup_datetime) <= 2020
 ), 
 yellow_tripdata as (
     select *, 
         'Yellow' as service_type,
-        extract(year from pickup_datetime) as year,
-        extract(month from pickup_datetime) as month,
-        cast(extract(month from pickup_datetime)/4 as int)+1 as quarter,
+        extract(YEAR from pickup_datetime)  as year,
+        extract(MONTH from pickup_datetime)  as month,
+        extract(QUARTER from pickup_datetime)  as quarter,  
         case
-            when cast(extract(month from pickup_datetime)/4 as int)+1=1 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q1') 
-            when cast(extract(month from pickup_datetime)/4 as int)+1=2 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q2')
-            when cast(extract(month from pickup_datetime)/4 as int)+1=3 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q3')
-            when cast(extract(month from pickup_datetime)/4 as int)+1=4 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q4')
+            when extract(QUARTER from pickup_datetime)=1 then concat(cast(extract(YEAR from pickup_datetime) as string), '/Q1') 
+            when extract(QUARTER from pickup_datetime)=2 then concat(cast(extract(YEAR from pickup_datetime) as string), '/Q2')
+            when extract(QUARTER from pickup_datetime)=3 then concat(cast(extract(YEAR from pickup_datetime) as string), '/Q3')
+            when extract(QUARTER from pickup_datetime)=4 then concat(cast(extract(YEAR from pickup_datetime) as string), '/Q4')
             else 'N/A'
         end as year_quarter        
-    from 
+    from
         {{ ref('stg__yellow_tripdata') }}
     where
-        pickup_datetime >= '2019-01-01' and
-        pickup_datetime <= '2020-12-31'
+        extract(YEAR from pickup_datetime) >= 2019 and
+        extract(YEAR from pickup_datetime) <= 2020
 ), 
 trips_unioned as (
     select * from green_tripdata
