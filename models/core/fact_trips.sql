@@ -6,12 +6,32 @@
 
 with green_tripdata as (
     select *, 
-        'Green' as service_type
+        'Green' as service_type,
+        extract(year from pickup_datetime) as year,
+        extract(month from pickup_datetime) as month,
+        cast(extract(month from pickup_datetime)/4 as int)+1 as quarter,
+        case
+            when cast(extract(month from pickup_datetime)/4 as int)+1=1 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q1') 
+            when cast(extract(month from pickup_datetime)/4 as int)+1=2 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q2')
+            when cast(extract(month from pickup_datetime)/4 as int)+1=3 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q3')
+            when cast(extract(month from pickup_datetime)/4 as int)+1=4 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q4')
+            else 'N/A'
+        end as year_quarter        
     from {{ ref('stg__green_tripdata') }}
 ), 
 yellow_tripdata as (
     select *, 
-        'Yellow' as service_type
+        'Yellow' as service_type,
+        extract(year from pickup_datetime) as year,
+        extract(month from pickup_datetime) as month,
+        cast(extract(month from pickup_datetime)/4 as int)+1 as quarter,
+        case
+            when cast(extract(month from pickup_datetime)/4 as int)+1=1 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q1') 
+            when cast(extract(month from pickup_datetime)/4 as int)+1=2 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q2')
+            when cast(extract(month from pickup_datetime)/4 as int)+1=3 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q3')
+            when cast(extract(month from pickup_datetime)/4 as int)+1=4 then CONCAT(cast(extract(year from pickup_datetime) as string), '/Q4')
+            else 'N/A'
+        end as year_quarter        
     from {{ ref('stg__yellow_tripdata') }}
 ), 
 trips_unioned as (
@@ -34,7 +54,11 @@ select trips_unioned.tripid,
     dropoff_zone.borough as dropoff_borough, 
     dropoff_zone.zone as dropoff_zone,  
     trips_unioned.pickup_datetime, 
-    trips_unioned.dropoff_datetime, 
+    trips_unioned.dropoff_datetime,
+    trips_unioned.year,
+    trips_unioned.month,
+    trips_unioned.quarter,
+    trips_unioned.year_quarter,
     trips_unioned.store_and_fwd_flag, 
     trips_unioned.passenger_count, 
     trips_unioned.trip_distance, 
@@ -57,7 +81,7 @@ on trips_unioned.dropoff_locationid = dropoff_zone.locationid
 
 -- Dev limit
 -- dbt build --select <model.sql> --vars '{'is_test_run: false}'
-{% if var('is_test_run', default=true) %}
+{% if var('is_test_run', default=false) %}
 
   limit 100
 
