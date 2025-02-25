@@ -31,10 +31,8 @@ models:
           - name: tripid
             description: Primary key for this table, generated with a concatenation of vendorid+pickup_datetime
             tests:
-              - unique:
-                severity: warn
-              - not_null:
-                severity: warn
+              - unique
+              - not_null
           - name: VendorID 
             description: > 
                 A code indicating the TPEP provider that provided the record.
@@ -123,10 +121,8 @@ models:
           - name: tripid
             description: Primary key for this table, generated with a concatenation of vendorid+pickup_datetime
             tests:
-              - unique:
-                severity: warn
-              - not_null:
-                severity: warn
+              - unique
+              - not_null
           - name: VendorID 
             description: > 
                 A code indicating the TPEP provider that provided the record.
