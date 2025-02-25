@@ -26,9 +26,9 @@ with green_tripdata as (
 yellow_tripdata as (
     select *, 
         'Yellow' as service_type,
-        extract(YEAR from pickup_datetime)  as year,
-        extract(MONTH from pickup_datetime)  as month,
-        extract(QUARTER from pickup_datetime)  as quarter,  
+        extract(YEAR from pickup_datetime) as year,
+        extract(MONTH from pickup_datetime) as month,
+        extract(QUARTER from pickup_datetime) as quarter,  
         case
             when extract(QUARTER from pickup_datetime)=1 then concat(cast(extract(YEAR from pickup_datetime) as string), '/Q1') 
             when extract(QUARTER from pickup_datetime)=2 then concat(cast(extract(YEAR from pickup_datetime) as string), '/Q2')
