@@ -201,7 +201,7 @@ models:
             description: The total amount charged to passengers. Does not include cash tips.
 
     - name: stg__fhv_tripdata
-      description: ""
+      description: "For Hire Vehicles Trip data"
       columns:
         - name: tripid
           data_type: string
@@ -213,7 +213,7 @@ models:
 
         - name: pickup_locationid
           data_type: int64
-          description: ""
+          description: "locationid where the meter was engaged"
           tests:
             - relationships:
                 to: ref('taxi_zone_lookup')
@@ -222,7 +222,7 @@ models:
 
         - name: dropoff_locationid
           data_type: int64
-          description: ""
+          description: "locationid where the meter was engaged"
           tests:
             - relationships:
                 to: ref('taxi_zone_lookup')
