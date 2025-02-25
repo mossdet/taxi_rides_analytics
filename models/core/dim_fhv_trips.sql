@@ -5,28 +5,23 @@
 }}
 
 with fhv_tripdata as (
-    select *, 
-        'fhv' as service_type
+    select 
+        'fhv' as service_type,
+        extract(YEAR from pickup_datetime) as year,
+        extract(MONTH from pickup_datetime) as month,
+        tripid, 
+        dispatch_base_id, 
+        pickup_locationid,
+        dropoff_locationid, 
+        pickup_datetime, 
+        dropoff_datetime,
+        sr_flag, 
+        affiliated_base_number
     from {{ ref('stg__fhv_tripdata') }}
 ),  
 dim_zones as (
     select * from {{ ref('dim_zones') }}
     where borough != 'Unknown'
 )
-select fhv_tripdata.service_type,
-    extract(YEAR from fhv_tripdata.pickup_datetime) as year,
-    extract(MONTH from fhv_tripdata.pickup_datetime) as month,
-    fhv_tripdata.tripid, 
-    fhv_tripdata.dispatch_base_id, 
-    fhv_tripdata.pickup_locationid,
-    fhv_tripdata.dropoff_locationid, 
-    fhv_tripdata.pickup_datetime, 
-    fhv_tripdata.dropoff_datetime,
-    fhv_tripdata.sr_flag, 
-    fhv_tripdata.affiliated_base_number
-from 
-    fhv_tripdata
-inner join dim_zones as pickup_zone
-    on fhv_tripdata.pickup_locationid = pickup_zone.locationid
-inner join dim_zones as dropoff_zone
-    on fhv_tripdata.dropoff_locationid = dropoff_zone.locationid
+select * from fhv_tripdata 
+inner join dim_zones on fhv_tripdata.pickup_locationid = dim_zones.locationid
