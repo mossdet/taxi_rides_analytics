@@ -8,14 +8,13 @@ with tripdata as
 (
     select *,
     row_number() over(partition by dispatching_base_num, unique_row_id, pickup_datetime) as rn,
-    cast(REPLACE(dispatching_base_num, 'B', '') as int) as dbit_int
     from {{ source('staging','fhv_tripdata') }}
     where dispatching_base_num is not null
 )
 select
     -- identifiers
-    cast({{ dbt_utils.generate_surrogate_key(['dbit_int', 'pickup_datetime', 'dropoff_datetime']) }} as string) as tripid,
-    cast(dispatching_base_num as string) as dispatch_base_id,
+    {{ dbt.safe_cast("unique_row_id", api.Column.translate_type("string")) }} as tripid,
+    {{ dbt.safe_cast("dispatching_base_num", api.Column.translate_type("string")) }} as dispatch_base_id,
     {{ dbt.safe_cast("PULocationID", api.Column.translate_type("integer")) }} as pickup_locationid,
     {{ dbt.safe_cast("DOLocationID", api.Column.translate_type("integer")) }} as dropoff_locationid,
     
