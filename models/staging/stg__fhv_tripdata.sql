@@ -12,17 +12,21 @@ with tripdata as
     where dispatching_base_num is not null
 )
 select
+
     -- identifiers
+    'fhv' as service_type,
     {{ dbt.safe_cast("unique_row_id", api.Column.translate_type("string")) }} as tripid,
-    {{ dbt.safe_cast("dispatching_base_num", api.Column.translate_type("string")) }} as dispatch_base_id,
     {{ dbt.safe_cast("PULocationID", api.Column.translate_type("integer")) }} as pickup_locationid,
     {{ dbt.safe_cast("DOLocationID", api.Column.translate_type("integer")) }} as dropoff_locationid,
     
     -- -- timestamps
     cast(pickup_datetime as timestamp) as pickup_datetime,
     cast(dropoff_datetime as timestamp) as dropoff_datetime,
+    extract(YEAR from cast(pickup_datetime as timestamp)) as year,
+    extract(MONTH from cast(pickup_datetime as timestamp)) as month,
     
     -- -- trip info
+    {{ dbt.safe_cast("dispatching_base_num", api.Column.translate_type("string")) }} as dispatch_base_id,
     {{ dbt.safe_cast("SR_Flag", api.Column.translate_type("integer")) }} as sr_flag,
     cast(Affiliated_base_number as string) as affiliated_base_number
 from tripdata
