@@ -6,9 +6,9 @@
 
 with fhv_tripdata as (
     select 
-        'fhv' as service_type,
-        extract(YEAR from pickup_datetime) as year,
-        extract(MONTH from pickup_datetime) as month,
+        service_type,
+        year,
+        month,
         tripid, 
         dispatch_base_id, 
         pickup_locationid,
